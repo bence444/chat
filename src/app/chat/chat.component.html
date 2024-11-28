@@ -1,0 +1,7 @@
+<input type="text" [(ngModel)]="message" placeholder="Type here">
+
+<button (click)="sendMessage()">Send</button>
+
+@for (msg of messages(); track $index) {
+  <p>{{ msg.message }}</p>
+}

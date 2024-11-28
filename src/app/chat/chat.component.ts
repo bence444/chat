@@ -1,9 +1,22 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, filter } from 'rxjs';
+import {
+  Component,
+  inject,
+  OnInit,
+  PLATFORM_ID,
+  signal
+} from '@angular/core';
+import {
+  takeUntilDestroyed,
+  toSignal
+} from '@angular/core/rxjs-interop';
+import {
+  BehaviorSubject,
+  filter
+} from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
+import { isPlatformBrowser } from '@angular/common';
 
 /* const testMessages = [
 'LqruiYvUhkLRgzDhzXLu',
@@ -10015,6 +10028,7 @@ import * as signalR from '@microsoft/signalr';
 })
 export class ChatComponent implements OnInit {
 
+  private readonly _platform = inject(PLATFORM_ID);
   private readonly _activeRoute = inject(ActivatedRoute);
 
   private readonly _connection = new signalR.HubConnectionBuilder()
@@ -10033,6 +10047,8 @@ export class ChatComponent implements OnInit {
   groupId = signal('');
 
   constructor() {
+    if (!isPlatformBrowser(this._platform)) return;
+
     this._activeRoute.params
       .pipe(filter(x => x !== null), takeUntilDestroyed())
       .subscribe(x => this.groupId.set(x['groupId']));
@@ -10055,6 +10071,8 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (!isPlatformBrowser(this._platform)) return;
+    
     this._connection.start()
       .finally(() => console.log('connected'))
       .catch(err => console.error(err));
